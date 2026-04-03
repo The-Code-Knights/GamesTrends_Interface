@@ -1,0 +1,11 @@
+"https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=" --> Jugadores_actuales
+https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/ --> ranking, ID, peak_jugando_24h
+"https://store.steampowered.com/api/appdetails?appids=" ---> Nombre, ID, tipo(si es juego u otra cosa)....etc
+
+Class SteamApiClient ---> Almacena los datos en crudo (la estructura del Json)
+Class SteamCurrentPlayer ---> Debe construir la URL con la ID que deseamos y lo procesa para devolver jugadores concurrentes de ese ID
+Class SteamRankConsumer ---> Como el root es el ID hay que hacer leves cambios. Devuelve muchas cosas, pero nos interesa el nombre
+Class SteamService ---> Dado que el ranking se devuelve un Json que contiene los 100 primeros juegos, esta clase la usamos para procesarla
+parsear: Transformamos en todo string el Json.// root equivale a tomar todo. La idea es ir accediendo por niveles.
+
+#431960,480,1366800,1905180,218,1325860,365670,4333400,1812620// 1422450,1329410

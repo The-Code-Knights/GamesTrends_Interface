@@ -6,7 +6,7 @@ import com.google.gson.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SteamService {
+public class SteamParser {
 
     public List<SteamGame> parseGames(String json) {
         List<SteamGame> games = new ArrayList<>();
@@ -20,8 +20,7 @@ public class SteamService {
 
             SteamGame game = new SteamGame();
             game.appId = obj.get("appid").getAsString();
-            game.playerCount = obj.get("peak_in_game").getAsInt();
-
+            //game.Rank = obj.get("rank").getAsInt();
             games.add(game);
         }
 
