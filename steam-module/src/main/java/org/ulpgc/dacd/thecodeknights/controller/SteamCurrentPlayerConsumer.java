@@ -1,15 +1,18 @@
 package org.ulpgc.dacd.thecodeknights.controller;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import org.ulpgc.dacd.thecodeknights.model.SteamParser;
 
 import java.util.OptionalInt;
 
 public class SteamCurrentPlayerConsumer {
-    private final SteamHttpGestor httpClient;
 
-    public SteamCurrentPlayerConsumer(SteamHttpGestor httpClient) {
+    private final SteamHttpGestor httpClient;
+    private final SteamParser parser;
+
+    public SteamCurrentPlayerConsumer(SteamHttpGestor httpClient, SteamParser parser) {
         this.httpClient = httpClient;
+        this.parser = parser;
     }
 
     public OptionalInt getCurrentPlayers(String appId) {
@@ -17,17 +20,11 @@ public class SteamCurrentPlayerConsumer {
             String url = "https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=" + appId;
             String json = httpClient.fetchJson(url);
 
-            JsonObject root = JsonParser.parseString(json).getAsJsonObject();
-            JsonObject responseObj = root.getAsJsonObject("response");
-
-            if (responseObj != null && responseObj.has("player_count")) {
-                return OptionalInt.of(responseObj.get("player_count").getAsInt());
-            }
+            return parser.parseCurrentPlayers(json);
 
         } catch (Exception e) {
             System.err.println("Error obteniendo jugadores para appId " + appId + ": " + e.getMessage());
+            return OptionalInt.empty();
         }
-
-        return OptionalInt.empty();
     }
 }

@@ -1,7 +1,6 @@
 package org.ulpgc.dacd.thecodeknights.controller;
 
 import org.ulpgc.dacd.thecodeknights.model.SteamGame;
-import org.ulpgc.dacd.thecodeknights.model.SteamStore;
 
 import java.sql.*;
 import java.time.LocalDateTime;

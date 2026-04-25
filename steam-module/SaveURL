@@ -4,10 +4,10 @@ https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/ --> rank
 
 #431960,480,1366800,1905180,218,1325860,365670,4333400,1812620// 1422450,1329410
 
-SteamGame: Constituye el objeto del dominio. No puede ser modificado por ello unicamente tiene gets. Tambien controla que los atributos sean validos
+SteamGame: Constituye el objeto del dominio. No puede ser modificado por ello, unicamente tiene gets. Tambien controla que los atributos sean validos
 Interfaces: Consumen el objeto "procesado" por la clase pertinente
-SteamParser: Se encarga de consumir una lista de los top juegos. Sin embargo, solo nos es util los ID que son recibidos como strings. Se almacenan en una lista.
-SteamApiConsumer: Solicita la informacion en JSON y la procesa para quedarnos con lo que queremos (id de los top 100)
+SteamParser: Se encarga de parsear la informacion consumida por las clases consumidoras
+SteamApiConsumer: Solicita la informacion en JSON y la procesa para quedarnos con lo que queremos.
 SteamGameNamesConsumer: Solicita la informacion en JSON y lo procesa para quedarnos con nombres que coincidan con los id
 SteamCurrentPlayerConsumer: solicita la informacion en JSON y lo procesa para quedarnos con jugadores concurrentes. El optional int es debido a que no nos vale
 gestionar con un return 0, ya que mas adelante generaria confunsion, asi que usamos esto para que quede como nulo en la base de datos
