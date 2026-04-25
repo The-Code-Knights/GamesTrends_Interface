@@ -1,4 +1,4 @@
-package org.ulpgc.dacd.thecodeknights;
+package org.ulpgc.dacd.thecodeknights.model;
 
 public class Stream {
 

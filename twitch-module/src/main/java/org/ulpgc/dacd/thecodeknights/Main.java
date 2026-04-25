@@ -1,39 +1,30 @@
 package org.ulpgc.dacd.thecodeknights;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.ulpgc.dacd.thecodeknights.control.*;
+import org.ulpgc.dacd.thecodeknights.model.*;
+
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     public static void main(String[] args) {
-        TwitchConfigProvider config = new TwitchConfigProvider();
-        TwitchApiConsumer consumer = new TwitchApiConsumer(config);
-        TwitchStreamAggregator aggregator = new TwitchStreamAggregator(consumer);
 
-        List<Stream> streams = consumer.getSafeFetchStreams(10000);
-
-        Map<String, GameStats> statsPerGame = aggregator.aggregateByGame(streams);
-
-        List<String> gameIds = new ArrayList<>(statsPerGame.keySet());
-
-        Map<String, String> gameNames = consumer.getGameNamesByIds(gameIds);
-
-        for (Map.Entry<String, GameStats> entry : statsPerGame.entrySet()) {
-            String gameId = entry.getKey();
-            GameStats gs = entry.getValue();
-
-            String name = gameNames.getOrDefault(gameId, "Unknown Game");
-            gs.setGameName(name);
+        if (args.length < 3) {
+            System.err.println("Uso: <DB_URL> <TOKEN> <CLIENT_ID>");
+            return;
         }
 
-        System.out.println("\n=== Estadísticas por Juego ===");
-        System.out.println("Nº juegos distintos: " + statsPerGame.size());
-        for (GameStats gs : statsPerGame.values()) {
-            System.out.printf("Juego: %s, Total Viewers: %d, Total Streams: %d%n",
-                    gs.getGameName(), gs.getTotalViewers(), gs.getTotalStreams());
-        }
+        String dbUrl = args[0];
+        String token = args[1];
+        String clientId= args[2];
 
-        System.out.println("Nº total de llamadas a la API: " + consumer.getApiCallCount());
+        TwitchParser parser = new TwitchParser();
+        TwitchConsumer consumer = new TwitchApiConsumer(token, clientId, parser);
+        TwitchStore store = new SQLiteTwitchStore(dbUrl);
+        TwitchController controller = new TwitchController(consumer, store);
+
+        long initialDelay = 0;
+        long period = 8;
+        controller.start(initialDelay, period, TimeUnit.HOURS);
     }
 }
