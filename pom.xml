@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>twitch-module</module>
-        <module>steam-module</module>
+        <module>twitch-feeder</module>
+        <module>steam-feeder</module>
     </modules>
 
     <properties>
