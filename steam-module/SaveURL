@@ -2,10 +2,16 @@
 https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/ --> ranking, ID, peak_jugando_24h
 "https://store.steampowered.com/api/appdetails?appids=" ---> Nombre, ID, tipo(si es juego u otra cosa)....etc
 
-Class SteamApiClient ---> Almacena los datos en crudo (la estructura del Json)
-Class SteamCurrentPlayer ---> Debe construir la URL con la ID que deseamos y lo procesa para devolver jugadores concurrentes de ese ID
-Class SteamRankConsumer ---> Como el root es el ID hay que hacer leves cambios. Devuelve muchas cosas, pero nos interesa el nombre
-Class SteamService ---> Dado que el ranking se devuelve un Json que contiene los 100 primeros juegos, esta clase la usamos para procesarla
-parsear: Transformamos en todo string el Json.// root equivale a tomar todo. La idea es ir accediendo por niveles.
-
 #431960,480,1366800,1905180,218,1325860,365670,4333400,1812620// 1422450,1329410
+
+SteamGame: Constituye el objeto del dominio. No puede ser modificado por ello unicamente tiene gets. Tambien controla que los atributos sean validos
+Interfaces: Consumen el objeto "procesado" por la clase pertinente
+SteamParser: Se encarga de consumir una lista de los top juegos. Sin embargo, solo nos es util los ID que son recibidos como strings. Se almacenan en una lista.
+SteamApiConsumer: Solicita la informacion en JSON y la procesa para quedarnos con lo que queremos (id de los top 100)
+SteamGameNamesConsumer: Solicita la informacion en JSON y lo procesa para quedarnos con nombres que coincidan con los id
+SteamCurrentPlayerConsumer: solicita la informacion en JSON y lo procesa para quedarnos con jugadores concurrentes. El optional int es debido a que no nos vale
+gestionar con un return 0, ya que mas adelante generaria confunsion, asi que usamos esto para que quede como nulo en la base de datos
+SteamRankConsumer: Consume los top 100 juegos mas jugados y gestioan las ID para ensamblar las otras partes
+SteamHttpGestor: Inyecta la dependencia del metodo fetchJson ya que ambas la necesitan. Esto lo hace gracias a un wiring en el main que las conecta manualmente
+SteamController: Orquestador del sistema, tiene lo necesario para arrancar el programa.
+

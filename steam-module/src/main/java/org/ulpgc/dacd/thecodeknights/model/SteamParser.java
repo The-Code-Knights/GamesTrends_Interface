@@ -1,5 +1,4 @@
-package org.ulpgc.dacd.thecodeknights;
-
+package org.ulpgc.dacd.thecodeknights.model;
 
 import com.google.gson.*;
 
@@ -8,8 +7,8 @@ import java.util.List;
 
 public class SteamParser {
 
-    public List<SteamGame> parseGames(String json) {
-        List<SteamGame> games = new ArrayList<>();
+    public List<String> parseGamesTopId(String json) {
+        List<String> GamesIds = new ArrayList<>();
 
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
         JsonObject response = root.getAsJsonObject("response");
@@ -17,13 +16,9 @@ public class SteamParser {
 
         for (JsonElement element : ranks) {
             JsonObject obj = element.getAsJsonObject();
-
-            SteamGame game = new SteamGame();
-            game.appId = obj.get("appid").getAsString();
-            //game.Rank = obj.get("rank").getAsInt();
-            games.add(game);
+            GamesIds.add(obj.get("appid").getAsString());
         }
 
-        return games;
+        return GamesIds;
     }
 }

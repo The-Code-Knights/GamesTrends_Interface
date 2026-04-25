@@ -1,21 +1,27 @@
 package org.ulpgc.dacd.thecodeknights;
+import org.ulpgc.dacd.thecodeknights.controller.*;
+import org.ulpgc.dacd.thecodeknights.model.SteamParser;
+import org.ulpgc.dacd.thecodeknights.model.SteamStore;
 
 import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
+        String dbURL = args[0];
 
-        SteamConsumer consumer = new SteamApiConsumer();
-        SteamSerializerInterface serializer = new SQLiteSteamSerializer();
+        SteamHttpGestor httpClient = new SteamHttpGestor();
+
+        SteamRankConsumer rankConsumer = new SteamRankConsumer(httpClient);
+        SteamParser parser = new SteamParser();
+        SteamGameNamesConsumer nameConsumer = new SteamGameNamesConsumer(httpClient);
+        SteamCurrentPlayerConsumer playerConsumer = new SteamCurrentPlayerConsumer(httpClient);
+
+        SteamConsumer consumer = new SteamApiConsumer(rankConsumer, parser, nameConsumer, playerConsumer);
+
+        SteamStore serializer = new SQLiteSteamStore(dbURL);
 
         SteamController controller = new SteamController(consumer, serializer);
 
-        controller.execute();
-        serializer.printAllGames(); //Para testear luego borrar
-        //SteamScheduler scheduler = new SteamScheduler(controller);
-        //scheduler.start(0, 1, TimeUnit.HOURS);
-        // Testear que funciona.
-        //scheduler.start(0, 55, TimeUnit.SECONDS);
+        controller.start(0, 8, TimeUnit.HOURS);
     }
 }
-
