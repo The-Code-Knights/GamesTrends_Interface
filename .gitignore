@@ -38,5 +38,5 @@ build/
 ### Mac OS ###
 .DS_Store
 
-# Environment variables
-.env
+### base datos del test###
+test_twitch.db
