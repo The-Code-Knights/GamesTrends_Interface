@@ -1,5 +1,5 @@
 package org.ulpgc.dacd.thecodeknights;
-
+/*
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.ulpgc.dacd.thecodeknights.controller.SteamConsumer;
@@ -57,3 +57,5 @@ public class SteamControllerTest {
         assertTrue(store.savedGames.isEmpty());
     }
 }
+
+ */

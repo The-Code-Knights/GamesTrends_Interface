@@ -6,7 +6,6 @@ import org.ulpgc.dacd.thecodeknights.model.SteamParser;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.Set;
 
 public class SteamApiConsumer implements SteamConsumer {
@@ -33,7 +32,9 @@ public class SteamApiConsumer implements SteamConsumer {
 
             List<SteamGame> games = buildGames(ids);
 
-            games.sort(Comparator.comparingInt((SteamGame g) -> g.getCurrentPlayers().orElse(0)).reversed());
+            games.sort(Comparator.comparingInt(
+                    (SteamGame g) -> g.getCurrentPlayers() != null ? g.getCurrentPlayers() : 0
+            ).reversed());
 
             return games;
 
@@ -62,7 +63,7 @@ public class SteamApiConsumer implements SteamConsumer {
         String name = nameConsumer.getGameName(id);
         if (name == null) return null;
 
-        OptionalInt players = playerConsumer.getCurrentPlayers(id);
+        Integer players = playerConsumer.getCurrentPlayers(id);
 
         return new SteamGame(id, name, players);
     }

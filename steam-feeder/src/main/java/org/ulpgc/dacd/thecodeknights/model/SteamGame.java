@@ -1,13 +1,11 @@
 package org.ulpgc.dacd.thecodeknights.model;
 
-import java.util.OptionalInt;
-
 public class SteamGame {
     private final String appId;
     private final String name;
-    private final OptionalInt currentPlayers;
+    private final Integer currentPlayers;
 
-    public SteamGame(String appId, String name, OptionalInt currentPlayers) {
+    public SteamGame(String appId, String name, Integer currentPlayers) {
         if (appId == null || appId.isEmpty()) {
             throw new IllegalArgumentException("appId cannot be null or empty");
         }
@@ -25,8 +23,7 @@ public class SteamGame {
         return name;
     }
 
-    public OptionalInt getCurrentPlayers() {
+    public Integer getCurrentPlayers() {
         return currentPlayers;
     }
 }
-

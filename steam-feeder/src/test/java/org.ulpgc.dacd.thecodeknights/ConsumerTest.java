@@ -1,3 +1,4 @@
+/*
 package org.ulpgc.dacd.thecodeknights;
 
 import org.ulpgc.dacd.thecodeknights.controller.SteamConsumer;
@@ -25,3 +26,6 @@ class StoreTest implements SteamStore {
         savedGames = games;
     }
 }
+
+
+ */

@@ -1,3 +1,4 @@
+/*
 package org.ulpgc.dacd.thecodeknights.controller;
 
 import org.ulpgc.dacd.thecodeknights.model.SteamGame;
@@ -70,3 +71,5 @@ public class SQLiteSteamStore implements SteamStore {
     }
 
 }
+
+ */

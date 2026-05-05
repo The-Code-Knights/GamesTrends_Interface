@@ -1,3 +1,4 @@
+/*
 package org.ulpgc.dacd.thecodeknights.controller;
 
 import org.ulpgc.dacd.thecodeknights.model.SteamGame;
@@ -8,3 +9,6 @@ public interface SteamStore {
     void save(List<SteamGame> games);
 
 }
+
+*/
+

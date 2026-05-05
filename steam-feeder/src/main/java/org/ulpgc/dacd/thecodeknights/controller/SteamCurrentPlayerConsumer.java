@@ -3,8 +3,6 @@ package org.ulpgc.dacd.thecodeknights.controller;
 
 import org.ulpgc.dacd.thecodeknights.model.SteamParser;
 
-import java.util.OptionalInt;
-
 public class SteamCurrentPlayerConsumer {
 
     private final SteamHttpGestor httpClient;
@@ -15,7 +13,7 @@ public class SteamCurrentPlayerConsumer {
         this.parser = parser;
     }
 
-    public OptionalInt getCurrentPlayers(String appId) {
+    public Integer getCurrentPlayers(String appId) {
         try {
             String url = "https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=" + appId;
             String json = httpClient.fetchJson(url);
@@ -24,7 +22,7 @@ public class SteamCurrentPlayerConsumer {
 
         } catch (Exception e) {
             System.err.println("Error obteniendo jugadores para appId " + appId + ": " + e.getMessage());
-            return OptionalInt.empty();
+            return null;
         }
     }
 }

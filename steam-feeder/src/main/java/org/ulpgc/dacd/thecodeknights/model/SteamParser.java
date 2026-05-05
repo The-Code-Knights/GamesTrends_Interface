@@ -4,7 +4,6 @@ import com.google.gson.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
 
 public class SteamParser {
 
@@ -39,14 +38,14 @@ public class SteamParser {
         return data.get("name").getAsString();
     }
 
-    public OptionalInt parseCurrentPlayers(String json) {
+    public Integer parseCurrentPlayers(String json) {
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
         JsonObject response = root.getAsJsonObject("response");
 
         if (response != null && response.has("player_count")) {
-            return OptionalInt.of(response.get("player_count").getAsInt());
+            return response.get("player_count").getAsInt();
         }
 
-        return OptionalInt.empty();
+        return null;
     }
 }

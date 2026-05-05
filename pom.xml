@@ -11,6 +11,7 @@
     <modules>
         <module>twitch-feeder</module>
         <module>steam-feeder</module>
+        <module>Event-store-builder</module>
     </modules>
 
     <properties>
