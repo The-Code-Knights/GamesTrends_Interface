@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
 import org.ulpgc.dacd.thecodeknights.model.Stream;
-import org.ulpgc.dacd.thecodeknights.model.TwitchParser;
+import org.ulpgc.dacd.thecodeknights.control.TwitchParser;
 
 import java.util.List;
 

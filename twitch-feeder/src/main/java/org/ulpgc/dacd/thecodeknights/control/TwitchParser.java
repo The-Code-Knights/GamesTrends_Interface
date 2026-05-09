@@ -1,18 +1,30 @@
-package org.ulpgc.dacd.thecodeknights.model;
+package org.ulpgc.dacd.thecodeknights.control;
 
-import com.google.gson.*;
-import java.util.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.ulpgc.dacd.thecodeknights.model.TwitchEvent;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TwitchParser {
 
-    public List<Stream> parseStreams(String jsonResponse) {
+    public List<TwitchEvent> parseEvents(String jsonResponse) {
         JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
         JsonArray data = jsonObject.getAsJsonArray("data");
-        List<Stream> streams = new ArrayList<>();
+        List<TwitchEvent> events = new ArrayList<>();
+
+        String ts = Instant.now().toString();
+        String ss = "twitch-feeder";
 
         for (JsonElement element : data) {
             JsonObject streamJson = element.getAsJsonObject();
-            streams.add(new Stream(
+            events.add(new TwitchEvent(
+                    ts,
+                    ss,
                     streamJson.get("id").getAsString(),
                     streamJson.get("user_name").getAsString(),
                     streamJson.get("game_id").getAsString(),
@@ -20,23 +32,8 @@ public class TwitchParser {
                     streamJson.get("viewer_count").getAsInt()
             ));
         }
-        return streams;
-    }
 
-    public Map<String, String> parseGameNames(String jsonResponse) {
-        JsonObject json = JsonParser.parseString(jsonResponse).getAsJsonObject();
-        JsonArray data = json.getAsJsonArray("data");
-
-        Map<String, String> result = new HashMap<>();
-
-        for (JsonElement element : data) {
-            JsonObject game = element.getAsJsonObject();
-            result.put(
-                    game.get("id").getAsString(),
-                    game.get("name").getAsString()
-            );
-        }
-        return result;
+        return events;
     }
 
     public String extractCursor(String jsonResponse) {

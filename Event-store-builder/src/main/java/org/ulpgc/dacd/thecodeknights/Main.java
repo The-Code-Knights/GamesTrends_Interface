@@ -11,28 +11,45 @@ import java.nio.file.Path;
 
 public class Main {
 
-    private static final String BROKER_URL = "tcp://localhost:61616";
-    private static final String STEAM_TOPIC = "steam.games";
-
     private static final int MAX_RETRIES = 5;
     private static final long RETRY_DELAY_MILLIS = 3000;
 
     public static void main(String[] args) throws Exception {
+
+        if (args.length < 3) {
+            System.err.println("Uso: java Main <brokerUrl> <steamTopic> <twitchTopic>");
+            return;
+        }
+
+        String brokerUrl = args[0];
+        String steamTopic = args[1];
+        String twitchTopic = args[2];
+
         EventPathBuilder pathBuilder = new EventPathBuilder(Path.of("eventstore"));
         EventStore eventStore = new FileEventStore(pathBuilder);
         EventMessageController controller = new EventMessageController(eventStore);
 
         EventSubscriber steamSubscriber = new ActiveEventSubscriber(
-                BROKER_URL,
-                STEAM_TOPIC,
-                "event-store-builder",
+                brokerUrl,
+                steamTopic,
+                "event-store-builder-steam",
                 "steam-games-subscription",
                 controller
         );
 
+        EventSubscriber twitchSubscriber = new ActiveEventSubscriber(
+                brokerUrl,
+                twitchTopic,
+                "event-store-builder-twitch",
+                "twitch-streams-subscription",
+                controller
+        );
+
         Runtime.getRuntime().addShutdownHook(new Thread(steamSubscriber::stop));
+        Runtime.getRuntime().addShutdownHook(new Thread(twitchSubscriber::stop));
 
         startWithRetries(steamSubscriber);
+        startWithRetries(twitchSubscriber);
 
         System.out.println("Event Store Builder ejecutándose. Pulsa Ctrl+C para detener.");
 

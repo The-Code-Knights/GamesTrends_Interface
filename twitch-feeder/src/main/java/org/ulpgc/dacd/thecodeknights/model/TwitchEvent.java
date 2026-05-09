@@ -1,0 +1,32 @@
+package org.ulpgc.dacd.thecodeknights.model;
+
+public class TwitchEvent {
+
+    private final String ts;
+    private final String ss;
+
+    private final String streamId;
+    private final String userName;
+    private final String gameId;
+    private final String title;
+    private final int viewerCount;
+
+    public TwitchEvent(String ts, String ss, String streamId, String userName,
+                       String gameId, String title, int viewerCount) {
+        this.ts = ts;
+        this.ss = ss;
+        this.streamId = streamId;
+        this.userName = userName;
+        this.gameId = gameId;
+        this.title = title;
+        this.viewerCount = viewerCount;
+    }
+
+    public String getTs() { return ts; }
+    public String getSs() { return ss; }
+    public String getStreamId() { return streamId; }
+    public String getUserName() { return userName; }
+    public String getGameId() { return gameId; }
+    public String getTitle() { return title; }
+    public int getViewerCount() { return viewerCount; }
+}
