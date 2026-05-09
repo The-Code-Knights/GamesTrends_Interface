@@ -1,71 +1,51 @@
-# Sprint 1 – Consumo y Almacenamiento de Datos
+# Sprint 2 – Message Broker & Event Store
 
 ## Descripción general
-En este primer sprint se desarrollan dos módulos independientes capaces de consumir información desde fuentes externas, procesarla y almacenarla en una base de datos SQLite.  
-Este trabajo servirán como base para los sprints posteriores, donde se ampliará la arquitectura y se construirá un dashboard.
-
-El proyecto sigue una arquitectura inspirada en el patrón **MVC**, implementando en este sprint únicamente las capas de **Modelo** y **Controlador**.
+En este sprint se amplía la arquitectura incorporando un sistema de **procesamiento de eventos** mediante **ActiveMQ**.  
+Los módulos dejan de escribir directamente en bases de datos y pasan a publicar eventos, que son procesados y almacenados por el nuevo componente **Event Store Builder**.
 
 ---
 
 ## Fuentes externas utilizadas
-- **Steam Web API** → Información sobre jugadores actuales en videojuegos .  
-- **Twitch API** → Información sobre streams en directo.
+- **Steam Web API** → Datos de jugadores concurrentes.
+- **Twitch API** → Datos de streams en directo.
 
-Cada fuente se procesa en un módulo independiente.
-
----
-
-## Arquitectura del Sprint 1
-El diseño se basa en un modelo común para ambos módulos, inspirado en el siguiente esquema:
-<img width="1878" height="770" alt="Diagrama de clases" src="https://github.com/user-attachments/assets/bb2d47ce-e78c-4ea8-8bac-46a3173a84ac" />
-
-
-Este diseño define:
-- Un consumidor de datos (API Consumer)  
-- Un controlador que orquesta el proceso  
-- Un almacén SQLite para persistencia  
-- Un modelo de datos específico para cada fuente  
+Ambas fuentes publican ahora sus datos como eventos.
 
 ---
 
-## Estado del Sprint 1
+## Arquitectura del Sprint 2
+El sistema evoluciona hacia un flujo orientado a eventos:
+
+
+- **steam-feeder** y **twitch-feeder** consumen datos externos y los publican en ActiveMQ.
+- **Event Store Builder** recibe los eventos, los transforma y los almacena como archivos `.events`.
+- Se reorganiza el proyecto siguiendo el patrón **MVC**.
+
+---
+
+## Estado del Sprint 2
 En este sprint se ha completado:
 
-- Configuración inicial del repositorio y estructura del proyecto  
-- Implementación de los módulos de consumo de APIs (Steam y Twitch)  
-- Procesamiento y transformación de los datos obtenidos  
-- Persistencia en bases de datos SQLite independientes  
-- Ejecución periódica del proceso de extracción y almacenamiento  
+- Integración de ActiveMQ como broker de mensajería
+- Publicación de eventos desde Steam y Twitch
+- Implementación del Event Store Builder
+- Persistencia de eventos en formato inmutable
+- Reorganización de paquetes y controladores siguiendo MVC
 
 ---
 
 ## Ramas del proyecto
-- **develop** → Rama principal de desarrollo (Sprint 1 completo).  
+- **develop** → Rama principal de desarrollo (Sprint 1 y 2 completo).
 - **master** → Reservada para versiones finales del proyecto.
+
 ---
+
 ## Cómo ejecutar el proyecto
 
-Cada módulo del proyecto se ejecuta de forma independiente y requiere distintos argumentos según la fuente de datos que consume.
-
+### Ejecutar el Event Store Builder
+Usage: java Main &lt;brokerUrl&gt; &lt;steamTopic&gt; &lt;twitchTopic&gt;
 ### Ejecutar el módulo de Steam
-El módulo **steam-feeder** solo necesita recibir la ruta a la base de datos SQLite donde se almacenarán los datos.
-
-**Uso:**
-java -jar steam-feeder.jar <ruta_base_de_datos>
-
-
+Usage: java Main &lt;brokerUrl&gt; &lt;steamTopic&gt;
 ### Ejecutar el módulo de Twitch
-El módulo **twitch-feeder** requiere tres argumentos:
-
-1. **Ruta de la base de datos SQLite**
-2. **Token de acceso de Twitch**
-3. **Client ID de Twitch**
-
-**Uso:**
-java -jar twitch-feeder.jar &lt;ruta_base_de_datos&gt; &lt;token&gt; &lt;client_id&gt;
-
-> Nota: El token y el Client ID deben obtenerse desde la plataforma de desarrolladores de Twitch.
-
-
-
+Usage: java Main &lt;TwitchToken&gt; &lt;TwitchClientId&gt; &lt;brokerUrl&gt; &lt;TwitchTopicName&gt;
