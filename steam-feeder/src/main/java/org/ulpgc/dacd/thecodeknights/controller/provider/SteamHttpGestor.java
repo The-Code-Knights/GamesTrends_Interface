@@ -1,4 +1,4 @@
-package org.ulpgc.dacd.thecodeknights.controller;
+package org.ulpgc.dacd.thecodeknights.controller.provider;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

@@ -1,7 +1,7 @@
-package org.ulpgc.dacd.thecodeknights.controller;
+package org.ulpgc.dacd.thecodeknights.controller.provider;
 
 
-import org.ulpgc.dacd.thecodeknights.model.SteamParser;
+import org.ulpgc.dacd.thecodeknights.controller.SteamParser;
 
 public class SteamCurrentPlayerConsumer {
 

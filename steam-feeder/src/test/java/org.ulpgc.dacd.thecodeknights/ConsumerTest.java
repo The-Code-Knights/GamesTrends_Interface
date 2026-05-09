@@ -1,7 +1,7 @@
 /*
 package org.ulpgc.dacd.thecodeknights;
 
-import org.ulpgc.dacd.thecodeknights.controller.SteamConsumer;
+import org.ulpgc.dacd.thecodeknights.controller.provider.SteamConsumer;
 import org.ulpgc.dacd.thecodeknights.model.SteamGame;
 import org.ulpgc.dacd.thecodeknights.controller.SteamStore;
 

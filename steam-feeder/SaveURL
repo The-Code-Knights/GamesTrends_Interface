@@ -15,10 +15,12 @@ SteamRankConsumer: Consume los top 100 juegos mas jugados y gestioan las ID para
 SteamHttpGestor: Inyecta la dependencia del metodo fetchJson ya que ambas la necesitan. Esto lo hace gracias a un wiring en el main que las conecta manualmente
 SteamController: Orquestador del sistema, tiene lo necesario para arrancar el programa.
 
-SteamEventSerializer: Genera un Json con uan estructura tal que: {"ts": 1714060000000,"ss": "steam-feeder","appId": "730","name": "Counter-Strike 2","players": 1200000}
-SteamEventMapper:
-SteamEventPipeline:
-SteamEventPublisher:
+
+SteamEventPublisher: Para construir los eventos,Genera un Json con una estructura tal que:
+{"ts": 1714060000000,"ss": "steam-feeder","appId": "730","name": "Counter-Strike 2","players": 1200000}
+Luego los publica y gestiona la coneccion
+
+
 
 ActiveEventSubscriber: Conectarse al ActiveMQ, crea una sesion y un topic. Recibe los mensajes
 EventMessageController: Coordina procesamiento de eventos.Llama a FileEventStore para que se los dé

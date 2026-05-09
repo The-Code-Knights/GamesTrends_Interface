@@ -2,7 +2,7 @@ package org.ulpgc.dacd.thecodeknights;
 /*
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.ulpgc.dacd.thecodeknights.controller.SteamConsumer;
+import org.ulpgc.dacd.thecodeknights.controller.provider.SteamConsumer;
 import org.ulpgc.dacd.thecodeknights.controller.SteamController;
 
 import java.util.List;

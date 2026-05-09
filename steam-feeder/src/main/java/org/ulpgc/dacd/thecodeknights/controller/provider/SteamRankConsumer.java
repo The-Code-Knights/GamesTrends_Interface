@@ -1,4 +1,4 @@
-package org.ulpgc.dacd.thecodeknights.controller;
+package org.ulpgc.dacd.thecodeknights.controller.provider;
 
 public class SteamRankConsumer {
 

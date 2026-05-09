@@ -1,7 +1,7 @@
 package org.ulpgc.dacd.thecodeknights;
 /*
 import org.junit.jupiter.api.Test;
-import org.ulpgc.dacd.thecodeknights.model.SteamParser;
+import org.ulpgc.dacd.thecodeknights.controller.SteamParser;
 
 import java.util.List;
 

@@ -11,30 +11,24 @@ import java.nio.file.Path;
 
 public class Main {
 
-    private static final String BROKER_URL = "tcp://localhost:61616";
-    private static final String STEAM_TOPIC = "steam.games";
-
     private static final int MAX_RETRIES = 5;
     private static final long RETRY_DELAY_MILLIS = 3000;
 
     public static void main(String[] args) throws Exception {
+        String brokerUrl = args[0];
+        String steamTopic = args[1];
         EventPathBuilder pathBuilder = new EventPathBuilder(Path.of("eventstore"));
         EventStore eventStore = new FileEventStore(pathBuilder);
         EventMessageController controller = new EventMessageController(eventStore);
 
-        EventSubscriber steamSubscriber = new ActiveEventSubscriber(
-                BROKER_URL,
-                STEAM_TOPIC,
-                "event-store-builder",
-                "steam-games-subscription",
-                controller
-        );
+        EventSubscriber steamSubscriber = new ActiveEventSubscriber(brokerUrl,steamTopic,
+                "event-store-builder", "steam-games-subscription", controller);
 
         Runtime.getRuntime().addShutdownHook(new Thread(steamSubscriber::stop));
 
         startWithRetries(steamSubscriber);
 
-        System.out.println("Event Store Builder ejecutándose. Pulsa Ctrl+C para detener.");
+        System.out.println("Event Store Builder ejecutándose.");
 
         Thread.currentThread().join();
     }

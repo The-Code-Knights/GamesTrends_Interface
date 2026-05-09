@@ -1,4 +1,4 @@
-package org.ulpgc.dacd.thecodeknights.model;
+package org.ulpgc.dacd.thecodeknights.controller;
 
 import com.google.gson.*;
 
