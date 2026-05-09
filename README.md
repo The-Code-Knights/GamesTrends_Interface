@@ -17,6 +17,7 @@ Ambas fuentes publican ahora sus datos como eventos.
 ## Arquitectura del Sprint 2
 El sistema evoluciona hacia un flujo orientado a eventos:
 
+<img width="1989" height="1299" alt="Diagrama Store Builder " src="https://github.com/user-attachments/assets/49ca1b86-4c28-4930-b0b2-336b449a61e8" />
 
 - **steam-feeder** y **twitch-feeder** consumen datos externos y los publican en ActiveMQ.
 - **Event Store Builder** recibe los eventos, los transforma y los almacena como archivos `.events`.
