@@ -15,20 +15,44 @@ public class Main {
     private static final long RETRY_DELAY_MILLIS = 3000;
 
     public static void main(String[] args) throws Exception {
+        if (args.length < 3) {
+            System.err.println("Uso: java Main <brokerUrl> <steamTopic> <twitchTopic>");
+            return;
+        }
+
         String brokerUrl = args[0];
         String steamTopic = args[1];
+        String twitchTopic = args[2];
+
         EventPathBuilder pathBuilder = new EventPathBuilder(Path.of("eventstore"));
         EventStore eventStore = new FileEventStore(pathBuilder);
         EventMessageController controller = new EventMessageController(eventStore);
 
-        EventSubscriber steamSubscriber = new ActiveEventSubscriber(brokerUrl,steamTopic,
-                "event-store-builder", "steam-games-subscription", controller);
+        EventSubscriber steamSubscriber = new ActiveEventSubscriber(
+                brokerUrl,
+                steamTopic,
+                "event-store-builder-steam",
+                "steam-games-subscription",
+                controller
+        );
 
-        Runtime.getRuntime().addShutdownHook(new Thread(steamSubscriber::stop));
+        EventSubscriber twitchSubscriber = new ActiveEventSubscriber(
+                brokerUrl,
+                twitchTopic,
+                "event-store-builder-twitch",
+                "twitch-streams-subscription",
+                controller
+        );
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            steamSubscriber.stop();
+            twitchSubscriber.stop();
+        }));
 
         startWithRetries(steamSubscriber);
+        startWithRetries(twitchSubscriber);
 
-        System.out.println("Event Store Builder ejecutándose.");
+        System.out.println("Event Store Builder ejecutándose. Pulsa Ctrl+C para detener.");
 
         Thread.currentThread().join();
     }
