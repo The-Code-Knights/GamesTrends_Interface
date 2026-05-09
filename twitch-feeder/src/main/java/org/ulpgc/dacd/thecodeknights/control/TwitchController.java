@@ -1,6 +1,8 @@
 package org.ulpgc.dacd.thecodeknights.control;
 
-import org.ulpgc.dacd.thecodeknights.model.Stream;
+import org.ulpgc.dacd.thecodeknights.control.provider.TwitchConsumer;
+import org.ulpgc.dacd.thecodeknights.control.store.TwitchEventPublisher;
+import org.ulpgc.dacd.thecodeknights.model.TwitchEvent;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 public class TwitchController {
 
     private final TwitchConsumer consumer;
-    private final TwitchStore store;
+    private final TwitchEventPublisher publisher;
     private final ScheduledExecutorService scheduler;
 
-    public TwitchController(TwitchConsumer consumer, TwitchStore store) {
+    public TwitchController(TwitchConsumer consumer, TwitchEventPublisher publisher) {
         this.consumer = consumer;
-        this.store = store;
+        this.publisher = publisher;
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -24,21 +26,16 @@ public class TwitchController {
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 execute();
-                System.out.println("Captura de Twitch finalizada.");
-            } catch (Exception e) {
-                System.err.println("Error: " + e.getMessage());
-            }
+            } catch (Exception ignored) {}
         }, initialDelay, period, unit);
     }
 
     public void execute() {
         try {
-            List<Stream> streams = consumer.fetchStreams(10000);
-            store.save(streams);
-        } catch (IOException e) {
-            System.err.println("Error fetching streams: " + e.getMessage());
-        }
-        System.out.println("API calls realizadas: " + consumer.getApiCallCount());
+            List<TwitchEvent> events = consumer.fetchEvents(10000);
+            publisher.publish(events);
+        } catch (IOException ignored) {}
+        catch (Exception ignored) {}
     }
 
     public void stop() {

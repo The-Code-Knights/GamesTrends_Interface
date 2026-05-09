@@ -38,8 +38,11 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### base datos del test###
-test_twitch.db
+# Ignorar todo el eventstore
+eventstore/
+
+# Ignorar cualquier archivo .events
+*.events
 
 ###Enlaces importantes y notas ###
-SaveURL
+steam-feeder/SaveURL

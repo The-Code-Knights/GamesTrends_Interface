@@ -1,25 +1,24 @@
 import fakes.FakeTwitchConsumer;
-import fakes.FakeTwitchStore;
+import fakes.FakeTwitchEventPipeline;
 import org.junit.jupiter.api.Test;
 import org.ulpgc.dacd.thecodeknights.control.TwitchController;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TwitchControllerTest {
 
     @Test
-    void execute_shouldFetchAndStoreStreams() {
+    void execute_shouldFetchAndSendEvents() {
 
         FakeTwitchConsumer consumer = new FakeTwitchConsumer();
-        FakeTwitchStore store = new FakeTwitchStore();
+        FakeTwitchEventPipeline pipeline = new FakeTwitchEventPipeline();
 
-        TwitchController controller = new TwitchController(consumer, store);
+        TwitchController controller = new TwitchController(consumer, pipeline);
 
         controller.execute();
 
-        assertEquals(2, store.saved.size());
-        assertEquals("user1", store.saved.get(0).getUserName());
-        assertEquals("user2", store.saved.get(1).getUserName());
+        assertEquals(2, pipeline.received.size());
+        assertEquals("user1", pipeline.received.get(0).getUserName());
+        assertEquals("user2", pipeline.received.get(1).getUserName());
     }
 }
