@@ -28,6 +28,7 @@ public class TwitchParser {
                     streamJson.get("id").getAsString(),
                     streamJson.get("user_name").getAsString(),
                     streamJson.get("game_id").getAsString(),
+                    "",
                     streamJson.get("title").getAsString(),
                     streamJson.get("viewer_count").getAsInt()
             ));

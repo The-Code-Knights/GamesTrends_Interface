@@ -2,6 +2,7 @@ package org.ulpgc.dacd.thecodeknights;
 
 import org.ulpgc.dacd.thecodeknights.control.TwitchController;
 import org.ulpgc.dacd.thecodeknights.control.TwitchParser;
+import org.ulpgc.dacd.thecodeknights.control.provider.GameNameCache;
 import org.ulpgc.dacd.thecodeknights.control.provider.TwitchApiConsumer;
 import org.ulpgc.dacd.thecodeknights.control.provider.TwitchConsumer;
 import org.ulpgc.dacd.thecodeknights.control.store.TwitchEventPublisher;
@@ -24,7 +25,8 @@ public class Main {
         String topicName = args[3];
 
         TwitchParser parser = new TwitchParser();
-        TwitchConsumer consumer = new TwitchApiConsumer(token, clientId, parser);
+        GameNameCache gameNameCache = new GameNameCache("game_names.db");
+        TwitchConsumer consumer = new TwitchApiConsumer(token, clientId, parser, gameNameCache);
 
         TwitchEventPublisher publisher = new TwitchEventPublisher(brokerUrl, topicName);
 
