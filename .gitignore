@@ -44,8 +44,9 @@ eventstore/
 # Ignorar cualquier archivo .events
 *.events
 
-# Ignorar base de datos de caché de nombres
+# Ignorar bases de datos locales
 game_names.db
+datamart.db
 
 ###Enlaces importantes y notas ###
 steam-feeder/SaveURL

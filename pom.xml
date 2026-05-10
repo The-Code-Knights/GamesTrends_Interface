@@ -12,6 +12,7 @@
         <module>twitch-feeder</module>
         <module>steam-feeder</module>
         <module>Event-store-builder</module>
+        <module>business-unit</module>
     </modules>
 
     <properties>
