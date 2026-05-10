@@ -14,8 +14,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        if (args.length < 4) {
-            System.err.println("Uso: java Main <TwitchToken> <TwitchClientId> <brokerUrl> <TwitchTopicName>");
+        if (args.length < 5) {
+            System.err.println("Uso: java Main <TwitchToken> <TwitchClientId> <brokerUrl> <TwitchTopicName> <gameNameCacheDb>");
             return;
         }
 
@@ -23,9 +23,10 @@ public class Main {
         String clientId = args[1];
         String brokerUrl = args[2];
         String topicName = args[3];
+        String gameNameCacheDb = args[4];
 
         TwitchParser parser = new TwitchParser();
-        GameNameCache gameNameCache = new GameNameCache("game_names.db");
+        GameNameCache gameNameCache = new GameNameCache(gameNameCacheDb);
         TwitchConsumer consumer = new TwitchApiConsumer(token, clientId, parser, gameNameCache);
 
         TwitchEventPublisher publisher = new TwitchEventPublisher(brokerUrl, topicName);
