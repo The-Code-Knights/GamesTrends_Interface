@@ -1,24 +1,34 @@
 import fakes.FakeTwitchConsumer;
-import fakes.FakeTwitchEventPipeline;
 import org.junit.jupiter.api.Test;
 import org.ulpgc.dacd.thecodeknights.control.TwitchController;
+import org.ulpgc.dacd.thecodeknights.control.store.TwitchEventPublisher;
+import org.ulpgc.dacd.thecodeknights.model.TwitchEvent;
+
+import javax.jms.JMSException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TwitchControllerTest {
 
     @Test
-    void execute_shouldFetchAndSendEvents() {
-
+    void execute_fetchesAndPublishesEvents() {
         FakeTwitchConsumer consumer = new FakeTwitchConsumer();
-        FakeTwitchEventPipeline pipeline = new FakeTwitchEventPipeline();
+        List<TwitchEvent> received = new ArrayList<>();
 
-        TwitchController controller = new TwitchController(consumer, pipeline);
+        TwitchEventPublisher fakePublisher = new TwitchEventPublisher(null, null) {
+            @Override
+            public void publish(List<TwitchEvent> events) throws JMSException {
+                received.addAll(events);
+            }
+        };
 
+        TwitchController controller = new TwitchController(consumer, fakePublisher);
         controller.execute();
 
-        assertEquals(2, pipeline.received.size());
-        assertEquals("user1", pipeline.received.get(0).getUserName());
-        assertEquals("user2", pipeline.received.get(1).getUserName());
+        assertEquals(2, received.size());
+        assertEquals("user1", received.get(0).getUserName());
+        assertEquals("user2", received.get(1).getUserName());
     }
 }

@@ -1,61 +1,49 @@
 package org.ulpgc.dacd.thecodeknights;
-/*
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.ulpgc.dacd.thecodeknights.controller.provider.SteamConsumer;
-import org.ulpgc.dacd.thecodeknights.controller.SteamController;
 
+import org.junit.jupiter.api.Test;
+import org.ulpgc.dacd.thecodeknights.controller.SteamController;
+import org.ulpgc.dacd.thecodeknights.controller.store.SteamEventPublisher;
+import org.ulpgc.dacd.thecodeknights.model.SteamEvent;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SteamControllerTest {
+class SteamControllerTest {
 
-    private SteamController controller;
-    private ConsumerTest consumer;
-    private StoreTest store;
+    @Test
+    void execute_withEvents_publishesAll() {
+        SteamEvent event = new SteamEvent("2024-01-01T00:00:00Z", "steam-feeder", "730", "Counter-Strike 2", 1000000);
 
-    @BeforeEach
-    void setUp() {
-        consumer = new ConsumerTest();
-        store = new StoreTest();
-        controller = new SteamController(consumer, store);
+        List<SteamEvent> published = new ArrayList<>();
+        SteamEventPublisher fakePublisher = new SteamEventPublisher("fake", "fake") {
+            @Override
+            public void publish(List<SteamEvent> events) {
+                published.addAll(events);
+            }
+        };
+
+        SteamController controller = new SteamController(() -> List.of(event), fakePublisher);
+        controller.execute();
+
+        assertEquals(1, published.size());
+        assertEquals("730", published.get(0).getAppId());
     }
 
     @Test
-    void shouldCallStoreWhenExecute() {
-        // WHEN
+    void execute_emptyList_publishesNothing() {
+        List<SteamEvent> published = new ArrayList<>();
+        SteamEventPublisher fakePublisher = new SteamEventPublisher("fake", "fake") {
+            @Override
+            public void publish(List<SteamEvent> events) {
+                published.addAll(events);
+            }
+        };
+
+        SteamController controller = new SteamController(List::of, fakePublisher);
         controller.execute();
 
-        // THEN
-        assertTrue(store.wasCalled);
-    }
-
-    @Test
-    void shouldPassGamesToStore() {
-        // WHEN
-        controller.execute();
-
-        // THEN
-        assertNotNull(store.savedGames);
-        assertEquals(1, store.savedGames.size());
-        assertEquals("123", store.savedGames.get(0).getAppId());
-    }
-    @Test
-    void shouldHandleEmptyGameList() {
-        // GIVEN
-        SteamConsumer consumer = () -> List.of(); // lista vacía
-        StoreTest store = new StoreTest();
-
-        SteamController controller = new SteamController(consumer, store);
-
-        // WHEN
-        controller.execute();
-
-        // THEN
-        assertTrue(store.wasCalled);
-        assertTrue(store.savedGames.isEmpty());
+        assertTrue(published.isEmpty());
     }
 }
-
- */
