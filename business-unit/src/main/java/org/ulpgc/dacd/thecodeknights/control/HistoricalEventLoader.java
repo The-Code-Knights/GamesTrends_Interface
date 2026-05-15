@@ -1,5 +1,8 @@
 package org.ulpgc.dacd.thecodeknights.control;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,6 +10,8 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public class HistoricalEventLoader {
+
+    private static final Logger logger = LoggerFactory.getLogger(HistoricalEventLoader.class);
 
     private final Path eventStorePath;
     private final EventRouter router;
@@ -18,7 +23,7 @@ public class HistoricalEventLoader {
 
     public void load() {
         if (!Files.exists(eventStorePath)) {
-            System.out.println("Event store no encontrado en: " + eventStorePath);
+            logger.warn("Event store no encontrado en: {}", eventStorePath);
             return;
         }
         try (Stream<Path> files = Files.walk(eventStorePath)) {
@@ -29,7 +34,7 @@ public class HistoricalEventLoader {
                  .sorted()
                  .forEach(this::loadFile);
         } catch (IOException e) {
-            System.err.println("Error recorriendo event store: " + e.getMessage());
+            logger.error("Error recorriendo event store: {}", e.getMessage());
         }
     }
 
@@ -41,9 +46,9 @@ public class HistoricalEventLoader {
                     router.route(line);
                 }
             }
-            System.out.println("Histórico cargado: " + file.getFileName());
+            logger.info("Histórico cargado: {}", file.getFileName());
         } catch (IOException e) {
-            System.err.println("Error leyendo " + file + ": " + e.getMessage());
+            logger.error("Error leyendo {}: {}", file, e.getMessage());
         }
     }
 }

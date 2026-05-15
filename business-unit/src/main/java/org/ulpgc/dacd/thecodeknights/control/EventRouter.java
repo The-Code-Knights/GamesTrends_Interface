@@ -3,6 +3,8 @@ package org.ulpgc.dacd.thecodeknights.control;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.datamart.DatamartRepository;
 import org.ulpgc.dacd.thecodeknights.control.event.SteamEvent;
 import org.ulpgc.dacd.thecodeknights.control.event.TwitchEvent;
@@ -11,6 +13,8 @@ import java.util.Map;
 
 public class EventRouter {
 
+    private static final Logger logger = LoggerFactory.getLogger(EventRouter.class);
+
     private static final Map<String, String> NAME_ALIASES = Map.ofEntries(
         Map.entry("counter-strike 2",                   "Counter-Strike"),
         Map.entry("red dead redemption ii",              "Red Dead Redemption 2"),
@@ -18,7 +22,7 @@ public class EventRouter {
         Map.entry("resident evil requiem",               "Resident Evil Requiem"),
         Map.entry("slay the spire ii",                   "Slay the Spire 2"),
         Map.entry("conan exiles enhanced",               "Conan Exiles"),
-        Map.entry("tom clancy's rainbow six siege",      "Rainbow Six Siege")
+        Map.entry("tom clancy’s rainbow six siege", "Rainbow Six Siege")
     );
 
     private static final String STEAM_SOURCE  = "steam-feeder";
@@ -42,7 +46,7 @@ public class EventRouter {
                 datamart.upsertTwitch(parseTwitch(obj));
             }
         } catch (Exception e) {
-            System.err.println("Error enrutando evento: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+            logger.error("Error enrutando evento: {} - {}", e.getClass().getSimpleName(), e.getMessage());
         }
     }
 

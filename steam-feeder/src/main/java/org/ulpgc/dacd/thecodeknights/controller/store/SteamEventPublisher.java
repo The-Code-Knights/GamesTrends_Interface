@@ -3,6 +3,8 @@ package org.ulpgc.dacd.thecodeknights.controller.store;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.model.SteamEvent;
 
 import javax.jms.*;
@@ -11,6 +13,8 @@ import java.lang.IllegalStateException;
 import java.util.List;
 
 public class SteamEventPublisher {
+
+    private static final Logger logger = LoggerFactory.getLogger(SteamEventPublisher.class);
 
     private final String brokerUrl;
     private final String topicName;
@@ -36,7 +40,7 @@ public class SteamEventPublisher {
         connection = factory.createConnection();
 
         connection.setExceptionListener(exception -> {
-            System.err.println("Conexión JMS perdida en SteamEventPublisher: " + exception.getMessage());
+            logger.error("Conexión JMS perdida en SteamEventPublisher: {}", exception.getMessage());
             stop();
         });
 
@@ -57,10 +61,10 @@ public class SteamEventPublisher {
                 String json = toJson(event);
                 send(json);
 
-                System.out.println("Evento Steam publicado: " + json);
+                logger.info("Evento Steam publicado: {}", json);
 
             } catch (Exception e) {
-                System.err.println("Error publicando evento Steam: " + e.getMessage());
+                logger.error("Error publicando evento Steam: {}", e.getMessage());
             }
         }
     }
@@ -77,7 +81,7 @@ public class SteamEventPublisher {
             producer.send(message);
 
         } catch (JMSException e) {
-            System.err.println("Error publicando evento. Se intentará reconectar: " + e.getMessage());
+            logger.warn("Error publicando evento. Se intentará reconectar: {}", e.getMessage());
 
             reconnect();
 
@@ -123,7 +127,7 @@ public class SteamEventPublisher {
             if (session != null) session.close();
             if (connection != null) connection.close();
         } catch (JMSException e) {
-            System.err.println("Error cerrando producer: " + e.getMessage());
+            logger.error("Error cerrando producer: {}", e.getMessage());
         }
     }
 

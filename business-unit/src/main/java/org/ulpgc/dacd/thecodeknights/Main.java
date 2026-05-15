@@ -6,17 +6,21 @@ import org.ulpgc.dacd.thecodeknights.control.HistoricalEventLoader;
 import org.ulpgc.dacd.thecodeknights.datamart.DatamartRepository;
 import org.ulpgc.dacd.thecodeknights.ui.DashboardServer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.file.Path;
 
 public class Main {
 
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
     private static final int MAX_RETRIES = 5;
     private static final long RETRY_DELAY_MILLIS = 3000;
-    private static final int DEFAULT_PORT = 8080;
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 5) {
-            System.err.println("Uso: java Main <brokerUrl> <steamTopic> <twitchTopic> <eventStorePath> <datamartPath> [<port>]");
+        if (args.length < 6) {
+            logger.error("Uso: java Main <brokerUrl> <steamTopic> <twitchTopic> <eventStorePath> <datamartPath> <port>");
             return;
         }
 
@@ -25,16 +29,16 @@ public class Main {
         String twitchTopic    = args[2];
         String eventStorePath = args[3];
         String datamartPath   = args[4];
-        int port              = args.length > 5 ? Integer.parseInt(args[5]) : DEFAULT_PORT;
+        int port              = Integer.parseInt(args[5]);
 
         DatamartRepository datamart = new DatamartRepository(datamartPath);
         EventRouter router = new EventRouter(datamart);
 
-        System.out.println("Cargando eventos históricos desde: " + eventStorePath);
+        logger.info("Cargando eventos históricos desde: {}", eventStorePath);
         datamart.beginBatch();
         new HistoricalEventLoader(Path.of(eventStorePath), router).load();
         datamart.endBatch();
-        System.out.println("Eventos históricos cargados en el datamart.");
+        logger.info("Eventos históricos cargados en el datamart.");
 
         BusinessSubscriber steamSubscriber = new BusinessSubscriber(
                 brokerUrl, steamTopic,
@@ -57,7 +61,7 @@ public class Main {
 
         new DashboardServer(datamart, port).start();
 
-        System.out.println("Business Unit iniciada. Dashboard disponible en http://localhost:" + port);
+        logger.info("Business Unit iniciada. Dashboard disponible en http://localhost:{}", port);
         Thread.currentThread().join();
     }
 
@@ -69,8 +73,8 @@ public class Main {
                 return;
             } catch (Exception e) {
                 attempts++;
-                System.err.println("No se pudo conectar con ActiveMQ. Intento " + attempts + "/" + MAX_RETRIES);
-                System.err.println("Detalle: " + e.getMessage());
+                logger.error("No se pudo conectar con ActiveMQ. Intento {}/{}", attempts, MAX_RETRIES);
+                logger.error("Detalle: {}", e.getMessage());
                 if (attempts >= MAX_RETRIES) {
                     throw new IllegalStateException(
                             "No se pudo iniciar Business Unit tras varios intentos", e);

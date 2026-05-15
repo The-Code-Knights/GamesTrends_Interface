@@ -7,16 +7,21 @@ import org.ulpgc.dacd.thecodeknights.eventstore.FileEventStore;
 import org.ulpgc.dacd.thecodeknights.subscriber.ActiveEventSubscriber;
 import org.ulpgc.dacd.thecodeknights.subscriber.EventSubscriber;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.file.Path;
 
 public class Main {
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     private static final int MAX_RETRIES = 5;
     private static final long RETRY_DELAY_MILLIS = 3000;
 
     public static void main(String[] args) throws Exception {
         if (args.length < 3) {
-            System.err.println("Uso: java Main <brokerUrl> <steamTopic> <twitchTopic>");
+            logger.error("Uso: java Main <brokerUrl> <steamTopic> <twitchTopic>");
             return;
         }
 
@@ -52,7 +57,7 @@ public class Main {
         startWithRetries(steamSubscriber);
         startWithRetries(twitchSubscriber);
 
-        System.out.println("Event Store Builder ejecutándose. Pulsa Ctrl+C para detener.");
+        logger.info("Event Store Builder ejecutándose. Pulsa Ctrl+C para detener.");
 
         Thread.currentThread().join();
     }
@@ -67,9 +72,8 @@ public class Main {
             } catch (Exception e) {
                 attempts++;
 
-                System.err.println("No se pudo conectar con ActiveMQ. Intento "
-                        + attempts + "/" + MAX_RETRIES);
-                System.err.println("Detalle: " + e.getMessage());
+                logger.error("No se pudo conectar con ActiveMQ. Intento {}/{}", attempts, MAX_RETRIES);
+                logger.error("Detalle: {}", e.getMessage());
 
                 if (attempts >= MAX_RETRIES) {
                     throw new IllegalStateException(

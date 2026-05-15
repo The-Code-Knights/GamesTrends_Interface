@@ -7,10 +7,15 @@ import org.ulpgc.dacd.thecodeknights.controller.SteamController;
 import org.ulpgc.dacd.thecodeknights.controller.store.SteamEventPublisher;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.jms.JMSException;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws JMSException {
         String brokerUrl = args[0];
@@ -28,8 +33,8 @@ public class Main {
         try {
             publisher.start();
         } catch (JMSException e) {
-            System.err.println("No se pudo iniciar SteamEventPublisher. Comprueba que ActiveMQ esté activo");
-            System.err.println("Detalle: " + e.getMessage());
+            logger.error("No se pudo iniciar SteamEventPublisher. Comprueba que ActiveMQ esté activo");
+            logger.error("Detalle: {}", e.getMessage());
             return;
         }
 

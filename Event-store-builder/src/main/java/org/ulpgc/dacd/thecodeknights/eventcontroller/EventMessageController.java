@@ -1,11 +1,15 @@
 package org.ulpgc.dacd.thecodeknights.eventcontroller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.eventstore.EventStoreException;
 
 import org.ulpgc.dacd.thecodeknights.eventstore.EventStore;
 
 
 public class EventMessageController {
+
+    private static final Logger logger = LoggerFactory.getLogger(EventMessageController.class);
 
     private final EventStore eventStore;
 
@@ -17,14 +21,14 @@ public class EventMessageController {
         try {
             eventStore.save(topicName, jsonEvent);
 
-            System.out.println("Evento almacenado correctamente.");
-            System.out.println("Topic: " + topicName);
-            System.out.println(jsonEvent);
+            logger.info("Evento almacenado correctamente.");
+            logger.info("Topic: {}", topicName);
+            logger.info("{}", jsonEvent);
 
         } catch (EventStoreException e) {
-            System.err.println("Evento inválido o no almacenado: " + e.getMessage());
+            logger.error("Evento inválido o no almacenado: {}", e.getMessage());
         } catch (Exception e) {
-            System.err.println("Error inesperado procesando evento: " + e.getMessage());
+            logger.error("Error inesperado procesando evento: {}", e.getMessage());
         }
     }
 }

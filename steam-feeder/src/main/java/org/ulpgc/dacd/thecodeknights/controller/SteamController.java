@@ -1,5 +1,7 @@
 package org.ulpgc.dacd.thecodeknights.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.controller.provider.SteamConsumer;
 import org.ulpgc.dacd.thecodeknights.controller.store.SteamEventPublisher;
 import org.ulpgc.dacd.thecodeknights.model.SteamEvent;
@@ -10,6 +12,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SteamController {
+
+    private static final Logger logger = LoggerFactory.getLogger(SteamController.class);
 
     private final SteamConsumer feeder;
     private final SteamEventPublisher publisher;
@@ -30,9 +34,9 @@ public class SteamController {
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 execute();
-                System.out.println("Eventos de Steam enviados.");
+                logger.info("Eventos de Steam enviados.");
             } catch (Exception e) {
-                System.err.println("Error ejecutando SteamController: " + e.getMessage());
+                logger.error("Error ejecutando SteamController: {}", e.getMessage());
             }
         }, initialDelay, period, unit);
     }

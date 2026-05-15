@@ -1,10 +1,14 @@
 package org.ulpgc.dacd.thecodeknights.control;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
 
 public class BusinessSubscriber {
+
+    private static final Logger logger = LoggerFactory.getLogger(BusinessSubscriber.class);
 
     private final String brokerUrl;
     private final String topicName;
@@ -30,7 +34,7 @@ public class BusinessSubscriber {
         connection = factory.createConnection();
         connection.setClientID(clientId);
         connection.setExceptionListener(e ->
-                System.err.println("Conexión JMS perdida en Business Unit (" + topicName + "): " + e.getMessage()));
+                logger.error("Conexión JMS perdida en Business Unit ({}): {}", topicName, e.getMessage()));
 
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Topic topic = session.createTopic(topicName);
@@ -42,12 +46,12 @@ public class BusinessSubscriber {
                     router.route(textMessage.getText());
                 }
             } catch (JMSException e) {
-                System.err.println("Error procesando mensaje JMS: " + e.getMessage());
+                logger.error("Error procesando mensaje JMS: {}", e.getMessage());
             }
         });
 
         connection.start();
-        System.out.println("Suscriptor Business Unit iniciado. Topic: " + topicName);
+        logger.info("Suscriptor Business Unit iniciado. Topic: {}", topicName);
     }
 
     public void stop() {
@@ -56,7 +60,7 @@ public class BusinessSubscriber {
             if (session != null) session.close();
             if (connection != null) connection.close();
         } catch (JMSException e) {
-            System.err.println("Error cerrando Business Unit subscriber: " + e.getMessage());
+            logger.error("Error cerrando Business Unit subscriber: {}", e.getMessage());
         }
     }
 }

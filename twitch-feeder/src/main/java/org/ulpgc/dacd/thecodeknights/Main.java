@@ -7,15 +7,20 @@ import org.ulpgc.dacd.thecodeknights.control.provider.TwitchApiConsumer;
 import org.ulpgc.dacd.thecodeknights.control.provider.TwitchConsumer;
 import org.ulpgc.dacd.thecodeknights.control.store.TwitchEventPublisher;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.jms.JMSException;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
 
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) {
 
         if (args.length < 5) {
-            System.err.println("Uso: java Main <TwitchToken> <TwitchClientId> <brokerUrl> <TwitchTopicName> <gameNameCacheDb>");
+            logger.error("Uso: java Main <TwitchToken> <TwitchClientId> <brokerUrl> <TwitchTopicName> <gameNameCacheDb>");
             return;
         }
 
@@ -34,7 +39,7 @@ public class Main {
         try {
             publisher.start();
         } catch (JMSException e) {
-            System.err.println("No se pudo iniciar TwitchEventPublisher");
+            logger.error("No se pudo iniciar TwitchEventPublisher");
             return;
         }
 
@@ -48,11 +53,11 @@ public class Main {
         try {
             controller.start(0, 8, TimeUnit.HOURS);
 
-            System.out.println("Ejecución en proceso...");
+            logger.info("Ejecución en proceso...");
 
         } catch (Exception e) {
-            System.err.println("Error durante la ejecución del Twitch Feeder:");
-            System.err.println(e.getMessage());
+            logger.error("Error durante la ejecución del Twitch Feeder:");
+            logger.error("{}", e.getMessage());
         }
     }
 }

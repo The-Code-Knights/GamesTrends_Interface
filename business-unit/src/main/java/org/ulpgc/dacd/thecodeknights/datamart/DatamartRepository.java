@@ -1,5 +1,7 @@
 package org.ulpgc.dacd.thecodeknights.datamart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.model.GameAnalytics;
 import org.ulpgc.dacd.thecodeknights.control.event.SteamEvent;
 import org.ulpgc.dacd.thecodeknights.control.event.TwitchEvent;
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatamartRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(DatamartRepository.class);
 
     private final String dbPath;
     private Connection batchConnection = null;
@@ -23,7 +27,7 @@ public class DatamartRepository {
             batchConnection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
             batchConnection.setAutoCommit(false);
         } catch (SQLException e) {
-            System.err.println("Error iniciando batch: " + e.getMessage());
+            logger.error("Error iniciando batch: {}", e.getMessage());
         }
     }
 
@@ -33,7 +37,7 @@ public class DatamartRepository {
             batchConnection.commit();
             batchConnection.close();
         } catch (SQLException e) {
-            System.err.println("Error finalizando batch: " + e.getMessage());
+            logger.error("Error finalizando batch: {}", e.getMessage());
         } finally {
             batchConnection = null;
         }
@@ -65,7 +69,7 @@ public class DatamartRepository {
                 )
             """);
         } catch (SQLException e) {
-            System.err.println("Error inicializando datamart: " + e.getMessage());
+            logger.error("Error inicializando datamart: {}", e.getMessage());
         }
     }
 
@@ -91,7 +95,7 @@ public class DatamartRepository {
                 if (ownConn) conn.close();
             }
         } catch (SQLException e) {
-            System.err.println("Error upsert steam: " + e.getMessage());
+            logger.error("Error upsert steam: {}", e.getMessage());
         }
     }
 
@@ -121,7 +125,7 @@ public class DatamartRepository {
                 if (ownConn) conn.close();
             }
         } catch (SQLException e) {
-            System.err.println("Error upsert twitch: " + e.getMessage());
+            logger.error("Error upsert twitch: {}", e.getMessage());
         }
     }
 
@@ -170,7 +174,7 @@ public class DatamartRepository {
                 ));
             }
         } catch (SQLException e) {
-            System.err.println("Error consultando analytics: " + e.getMessage());
+            logger.error("Error consultando analytics: {}", e.getMessage());
         }
         return results;
     }

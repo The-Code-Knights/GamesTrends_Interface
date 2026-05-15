@@ -1,9 +1,13 @@
 package org.ulpgc.dacd.thecodeknights.controller.provider;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.controller.SteamParser;
 
 public class SteamGameNamesConsumer {
+
+    private static final Logger logger = LoggerFactory.getLogger(SteamGameNamesConsumer.class);
 
     private final SteamHttpGestor httpClient;
     private final SteamParser parser;
@@ -21,7 +25,7 @@ public class SteamGameNamesConsumer {
             return parser.parseGameName(json, appId);
 
         } catch (Exception e) {
-            System.err.println("Error obteniendo nombre para appId " + appId + ": " + e.getMessage());
+            logger.error("Error obteniendo nombre para appId {}: {}", appId, e.getMessage());
             return null;
         }
     }

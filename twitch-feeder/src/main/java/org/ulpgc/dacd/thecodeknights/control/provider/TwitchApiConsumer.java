@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.control.TwitchParser;
 import org.ulpgc.dacd.thecodeknights.model.TwitchEvent;
 
@@ -14,6 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TwitchApiConsumer implements TwitchConsumer {
+
+    private static final Logger logger = LoggerFactory.getLogger(TwitchApiConsumer.class);
 
     private final String token;
     private final String clientId;
@@ -51,8 +55,8 @@ public class TwitchApiConsumer implements TwitchConsumer {
 
         List<TwitchEvent> enrichedEvents = fillGameNames(allEvents);
 
-        System.out.println("Ejecución completada con éxito.");
-        System.out.println("Llamadas realizadas a la API de Twitch: " + apiCallCount);
+        logger.info("Ejecución completada con éxito.");
+        logger.info("Llamadas realizadas a la API de Twitch: {}", apiCallCount);
 
         return enrichedEvents;
     }

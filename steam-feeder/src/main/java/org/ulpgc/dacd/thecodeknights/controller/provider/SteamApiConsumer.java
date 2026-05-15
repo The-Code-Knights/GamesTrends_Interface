@@ -1,5 +1,7 @@
 package org.ulpgc.dacd.thecodeknights.controller.provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.controller.SteamParser;
 import org.ulpgc.dacd.thecodeknights.model.SteamEvent;
 
@@ -13,6 +15,8 @@ import java.time.Instant;
 
 
 public class SteamApiConsumer implements SteamConsumer {
+
+    private static final Logger logger = LoggerFactory.getLogger(SteamApiConsumer.class);
 
     private static final String SOURCE = "steam-feeder";
 
@@ -48,7 +52,7 @@ public class SteamApiConsumer implements SteamConsumer {
             return events;
 
         } catch (Exception e) {
-            System.err.println("Error al obtener datos de Steam: " + e.getMessage());
+            logger.error("Error al obtener datos de Steam: {}", e.getMessage());
             return List.of();
         }
     }
@@ -125,7 +129,7 @@ public class SteamApiConsumer implements SteamConsumer {
             return games;
 
         } catch (Exception e) {
-            System.err.println("Error al obtener datos de Steam: " + e.getMessage());
+            logger.error("Error al obtener datos de Steam: {}", e.getMessage());
             return List.of();
         }
     }

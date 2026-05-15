@@ -2,6 +2,8 @@ package org.ulpgc.dacd.thecodeknights.subscriber;
 
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ulpgc.dacd.thecodeknights.eventcontroller.EventMessageController;
 
 import javax.jms.Connection;
@@ -13,6 +15,8 @@ import javax.jms.TextMessage;
 import javax.jms.Topic;
 
 public class ActiveEventSubscriber implements EventSubscriber {
+
+    private static final Logger logger = LoggerFactory.getLogger(ActiveEventSubscriber.class);
 
     private final String brokerUrl;
     private final String topicName;
@@ -46,7 +50,7 @@ public class ActiveEventSubscriber implements EventSubscriber {
 
         connection.setClientID(clientId);
         connection.setExceptionListener(exception -> {
-            System.err.println("Conexión JMS perdida en Event Store Builder: " + exception.getMessage());
+            logger.error("Conexión JMS perdida en Event Store Builder: {}", exception.getMessage());
         });
 
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -60,20 +64,20 @@ public class ActiveEventSubscriber implements EventSubscriber {
                 if (message instanceof TextMessage textMessage) {
                     controller.handle(topicName, textMessage.getText());
                 } else {
-                    System.err.println("Mensaje ignorado: no es TextMessage");
+                    logger.warn("Mensaje ignorado: no es TextMessage");
                 }
             } catch (JMSException e) {
-                System.err.println("Error procesando mensaje JMS: " + e.getMessage());
+                logger.error("Error procesando mensaje JMS: {}", e.getMessage());
             }
         });
 
         connection.start();
 
-        System.out.println("Suscriptor durable iniciado.");
-        System.out.println("Broker: " + brokerUrl);
-        System.out.println("Topic: " + topicName);
-        System.out.println("Client ID: " + clientId);
-        System.out.println("Subscription: " + subscriptionName);
+        logger.info("Suscriptor durable iniciado.");
+        logger.info("Broker: {}", brokerUrl);
+        logger.info("Topic: {}", topicName);
+        logger.info("Client ID: {}", clientId);
+        logger.info("Subscription: {}", subscriptionName);
     }
 
     @Override
@@ -83,7 +87,7 @@ public class ActiveEventSubscriber implements EventSubscriber {
             if (session != null) session.close();
             if (connection != null) connection.close();
         } catch (JMSException e) {
-            System.err.println("Error cerrando subscriber: " + e.getMessage());
+            logger.error("Error cerrando subscriber: {}", e.getMessage());
         }
     }
 }
