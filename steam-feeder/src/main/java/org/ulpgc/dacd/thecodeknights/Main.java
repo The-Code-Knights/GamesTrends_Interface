@@ -46,6 +46,6 @@ public class Main {
             publisher.stop();
         }));
 
-        controller.start(0, 8, TimeUnit.HOURS);
+        controller.start(0, 1, TimeUnit.HOURS);
     }
 }

@@ -51,7 +51,7 @@ public class Main {
         }));
 
         try {
-            controller.start(0, 8, TimeUnit.HOURS);
+            controller.start(0, 1, TimeUnit.HOURS);
 
             logger.info("Ejecución en proceso...");
 
