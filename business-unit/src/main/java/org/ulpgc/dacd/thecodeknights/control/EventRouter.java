@@ -4,10 +4,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.ulpgc.dacd.thecodeknights.datamart.DatamartRepository;
-import org.ulpgc.dacd.thecodeknights.model.SteamEvent;
-import org.ulpgc.dacd.thecodeknights.model.TwitchEvent;
+import org.ulpgc.dacd.thecodeknights.control.event.SteamEvent;
+import org.ulpgc.dacd.thecodeknights.control.event.TwitchEvent;
+
+import java.util.Map;
 
 public class EventRouter {
+
+    private static final Map<String, String> NAME_ALIASES = Map.ofEntries(
+        Map.entry("counter-strike 2",                   "Counter-Strike"),
+        Map.entry("red dead redemption ii",              "Red Dead Redemption 2"),
+        Map.entry("resident evil: requiem",              "Resident Evil Requiem"),
+        Map.entry("resident evil requiem",               "Resident Evil Requiem"),
+        Map.entry("slay the spire ii",                   "Slay the Spire 2"),
+        Map.entry("conan exiles enhanced",               "Conan Exiles"),
+        Map.entry("tom clancy's rainbow six siege",      "Rainbow Six Siege")
+    );
 
     private static final String STEAM_SOURCE  = "steam-feeder";
     private static final String TWITCH_SOURCE = "twitch-feeder";
@@ -41,7 +53,7 @@ public class EventRouter {
                 getString(obj, "ts"),
                 getString(obj, "ss"),
                 getString(obj, "appId"),
-                getString(obj, "name"),
+                normalizeName(getString(obj, "name")),
                 playersEl.getAsInt()
         );
     }
@@ -53,10 +65,25 @@ public class EventRouter {
                 getString(obj, "streamId"),
                 getString(obj, "userName"),
                 getString(obj, "gameId"),
-                getString(obj, "gameName"),
+                normalizeName(getString(obj, "gameName")),
                 getString(obj, "title"),
                 getInt(obj, "viewerCount")
         );
+    }
+
+    static String normalizeName(String name) {
+        if (name == null || name.isEmpty()) return name;
+        String normalized = name
+                .replace("™", "")
+                .replace("®", "")
+                .replace("©", "")
+                .replace("’", "’")
+                .replace("‘", "’")
+                .replaceAll("[:\\-]\\s*$", "")
+                .replaceAll("\\s{2,}", " ")
+                .trim();
+        String alias = NAME_ALIASES.get(normalized.toLowerCase());
+        return alias != null ? alias : normalized;
     }
 
     private String getString(JsonObject obj, String key) {

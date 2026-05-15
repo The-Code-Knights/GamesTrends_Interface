@@ -1,8 +1,8 @@
 package org.ulpgc.dacd.thecodeknights.datamart;
 
 import org.ulpgc.dacd.thecodeknights.model.GameAnalytics;
-import org.ulpgc.dacd.thecodeknights.model.SteamEvent;
-import org.ulpgc.dacd.thecodeknights.model.TwitchEvent;
+import org.ulpgc.dacd.thecodeknights.control.event.SteamEvent;
+import org.ulpgc.dacd.thecodeknights.control.event.TwitchEvent;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -63,38 +63,60 @@ public class DashboardServer {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>GamesTrends – Dashboard</title>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
                 <style>
-                    body            { background:#0d1117; color:#c9d1d9; }
+                    body            { background:#0d1117; color:#c9d1d9; font-size:1.2rem; }
                     .navbar         { background:#161b22; border-bottom:1px solid #30363d; }
                     .card           { background:#161b22; border:1px solid #30363d; }
-                    .table          { color:#c9d1d9; }
+                    .table          { color:#c9d1d9; font-size:1.15rem; }
                     .table thead th { background:#21262d; border-color:#30363d; color:#f0f6fc;
-                                      cursor:pointer; user-select:none; white-space:nowrap; }
+                                      cursor:pointer; user-select:none; white-space:nowrap; font-size:1.15rem; }
                     .table thead th:hover { background:#2d333b; }
-                    .table td       { border-color:#30363d; vertical-align:middle; }
+                    .table td       { border-color:#30363d; vertical-align:middle; padding:12px 14px; }
                     .table tbody tr:hover { background:#21262d; }
-                    .metric-card    { background:#21262d; border-radius:8px; padding:16px; text-align:center; }
-                    .metric-value   { font-size:2rem; font-weight:700; color:#58a6ff; }
-                    .metric-label   { font-size:.8rem; color:#8b949e; margin-top:4px; }
                     .info-box       { background:#21262d; border-left:4px solid #58a6ff;
-                                      padding:12px 16px; border-radius:4px; font-size:.88rem; }
-                    .controls-card  { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:20px; }
-                    .badge-high     { background:#238636; }
-                    .badge-mid      { background:#9a6700; }
-                    .badge-low      { background:#b91c1c; }
-                    .sort-arrow     { color:#58a6ff; font-size:.75rem; margin-left:4px; }
-                    .form-select    { background:#21262d; color:#c9d1d9; border-color:#30363d; }
+                                      padding:28px 32px; border-radius:4px; font-size:1.35rem; line-height:2.3; }
+                    .controls-card  { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:24px; }
+                    .sort-arrow     { color:#58a6ff; font-size:.9rem; margin-left:4px; }
+                    .form-select    { background:#21262d; color:#c9d1d9; border-color:#30363d; font-size:1.1rem; }
                     .form-select:focus { background:#21262d; color:#c9d1d9; border-color:#58a6ff; box-shadow:none; }
                     h2, h5          { color:#f0f6fc; }
+                    .score-alta     { background:#238636; color:#fff; padding:4px 14px; border-radius:6px; font-weight:700; display:inline-block; font-size:1.05rem; }
+                    .score-media    { background:#9a6700; color:#fff; padding:4px 14px; border-radius:6px; font-weight:700; display:inline-block; font-size:1.05rem; }
+                    .score-baja     { background:#6e3030; color:#fca5a5; padding:4px 14px; border-radius:6px; font-weight:700; display:inline-block; font-size:1.05rem; }
+
+                    .podium-section  { padding:50px 0 70px; }
+                    .podium-wrapper  { display:flex; justify-content:center; align-items:flex-end; gap:32px; flex-wrap:wrap; }
+                    .podium-card     { background:#161b22; border:1px solid #30363d; border-radius:18px;
+                                       padding:40px 32px; text-align:center; position:relative; }
+                    .podium-card.p2  { width:380px; min-height:260px; }
+                    .podium-card.p3  { width:350px; min-height:240px; }
+                    .podium-card.p1  { width:480px; min-height:360px; border:3px solid #ffd700;
+                                       box-shadow:0 0 60px rgba(255,215,0,0.3); }
+                    .podium-medal    { font-size:5rem; }
+                    .podium-card.p1 .podium-medal { font-size:7rem; }
+                    .podium-name     { font-weight:700; color:#f0f6fc; margin:14px 0 8px; }
+                    .podium-card.p1 .podium-name { font-size:1.9rem; }
+                    .podium-card.p2 .podium-name,
+                    .podium-card.p3 .podium-name { font-size:1.4rem; }
+                    .podium-score    { color:#8b949e; font-size:1.15rem; }
+                    .podium-score span { font-size:1.55rem; font-weight:700; color:#58a6ff; }
+                    .podium-extra    { margin-top:10px; color:#8b949e; font-size:1.05rem; }
+
+                    .confetti-piece  { position:absolute; font-size:2rem; pointer-events:none;
+                                       animation:floatUp 2.8s ease-in-out infinite; }
+                    @keyframes floatUp {
+                        0%   { transform:translateY(0) rotate(0deg);    opacity:1; }
+                        50%  { transform:translateY(-18px) rotate(18deg); opacity:.75; }
+                        100% { transform:translateY(0) rotate(0deg);    opacity:1; }
+                    }
                 </style>
             </head>
             <body>
 
-            <nav class="navbar px-4 py-3 mb-4 d-flex justify-content-between align-items-center">
+            <nav class="navbar px-4 py-3 mb-2 d-flex justify-content-between align-items-center">
                 <span class="fs-4 fw-bold text-white">🎮 GamesTrends Dashboard</span>
                 <div class="d-flex align-items-center gap-3">
-                    <span class="text-secondary small" id="lastUpdate">Cargando...</span>
+                    <span class="text-secondary" id="lastUpdate">Cargando...</span>
                     <button class="btn btn-sm" onclick="loadData()"
                             style="background:#21262d;color:#58a6ff;border:1px solid #58a6ff;">
                         ↻ Actualizar
@@ -104,111 +126,67 @@ public class DashboardServer {
 
             <div class="container-fluid px-4">
 
-                <!-- Tarjetas de resumen -->
-                <div class="row g-3 mb-4">
-                    <div class="col-6 col-md-3">
-                        <div class="metric-card">
-                            <div class="metric-value" id="totalGames">–</div>
-                            <div class="metric-label">Juegos con datos Steam</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="metric-card">
-                            <div class="metric-value" id="gamesWithTwitch">–</div>
-                            <div class="metric-label">Con presencia en Twitch</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="metric-card">
-                            <div class="metric-value" id="topRatio">–</div>
-                            <div class="metric-label">Mejor Stream Potential Ratio</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="metric-card">
-                            <div class="metric-value" id="totalViewers">–</div>
-                            <div class="metric-label">Viewers totales en Twitch</div>
-                        </div>
+                <div class="podium-section">
+                    <h2 class="text-center mb-4" style="font-size:2.4rem;">🏆 Top 3 Juegos Recomendados para Streamers</h2>
+                    <div class="podium-wrapper" id="podiumWrapper">
+                        <p class="text-secondary">Cargando...</p>
                     </div>
                 </div>
 
-                <!-- Panel de controles -->
                 <div class="controls-card mb-4">
-                    <div class="row align-items-end g-4">
+                    <div class="row align-items-center g-4">
+                        <div class="col-md-4">
+                            <div style="background:#0d1117; border-radius:10px; padding:18px 22px; font-size:1.15rem; text-align:center; white-space:nowrap;">
+                                <strong style="font-size:1.2rem; color:#f0f6fc;">Puntuación =</strong>
+                                <span style="color:#c9d1d9;"> (</span><span id="fW1" style="color:#58a6ff; font-weight:700; font-size:1.3rem;">0.70</span>
+                                <span style="color:#c9d1d9;"> × Ratio)</span>
+                                <span style="color:#8b949e;"> + </span>
+                                <span style="color:#c9d1d9;">(</span><span id="fW2" style="color:#58a6ff; font-weight:700; font-size:1.3rem;">0.30</span>
+                                <span style="color:#c9d1d9;"> × Espect. / Stream)</span>
+                            </div>
+                        </div>
                         <div class="col-md-2">
-                            <label class="form-label small fw-bold mb-1">Juegos a mostrar</label>
+                            <label class="form-label fw-bold mb-1">Juegos a mostrar</label>
                             <select class="form-select form-select-sm" id="limitSelect">
                                 <option value="20" selected>20</option>
                                 <option value="50">50</option>
-                                <option value="100">100</option>
                                 <option value="99999">Todos</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
-                            <label class="form-label small fw-bold mb-1">
-                                Peso Stream Potential Ratio:
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold mb-1">
+                                Peso Ratio:
                                 <span class="text-info" id="wRatioVal">70%</span>
-                                <span class="text-secondary ms-2" style="font-size:.75rem;font-weight:normal">
-                                    demanda del juego en Twitch
-                                </span>
+                                <span class="text-secondary ms-2" style="font-size:.9rem;font-weight:normal;">demanda del juego en Twitch</span>
                             </label>
                             <input type="range" class="form-range" id="wRatio" min="0" max="100" value="70">
                         </div>
-                        <div class="col-md-5">
-                            <label class="form-label small fw-bold mb-1">
-                                Peso Viewers / Stream:
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold mb-1">
+                                Peso Espectadores / Stream:
                                 <span class="text-info" id="wViewersVal">30%</span>
-                                <span class="text-secondary ms-2" style="font-size:.75rem;font-weight:normal">
-                                    audiencia media por streamer
-                                </span>
+                                <span class="text-secondary ms-2" style="font-size:.9rem;font-weight:normal;">audiencia media por streamer</span>
                             </label>
                             <input type="range" class="form-range" id="wViewers" min="0" max="100" value="30">
                         </div>
                     </div>
                 </div>
 
-                <!-- Gráficos -->
-                <div class="row g-3 mb-4">
-                    <div class="col-lg-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="mb-1">Ratio vs Viewers / Stream</h5>
-                                <p class="text-secondary small mb-3">
-                                    Cada punto es un juego. Arriba a la derecha = mejor oportunidad.
-                                </p>
-                                <canvas id="scatterChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="mb-1">Top 10 por Score de Oportunidad</h5>
-                                <p class="text-secondary small mb-3">
-                                    Score ponderado según los sliders. Se actualiza en tiempo real.
-                                </p>
-                                <canvas id="barChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Info box -->
                 <div class="info-box mb-4">
-                    <strong>📊 Métricas de valor añadido (cruzan datos Steam + Twitch)</strong><br>
-                    <b>Stream Potential Ratio</b> = Viewers Twitch / Jugadores Steam · Mayor → más gente prefiere <em>ver</em> que jugar.<br>
-                    <b>Viewers / Stream</b> = Viewers totales / Streams activos · Audiencia media disponible por streamer.<br>
-                    <b>Score</b> = (peso ratio × ratio) + (peso viewers/stream × viewers/stream÷1000), ambos normalizados a 0-1.<br>
-                    <b>Oportunidad</b>: <span class="badge badge-high">Alta</span> score &gt; 0.35 &nbsp;
-                    <span class="badge badge-mid">Media</span> score &gt; 0.17 &nbsp;
-                    <span class="badge badge-low">Baja</span> resto.
+                    <strong style="font-size:1.55rem;">📊 Métricas</strong><br>
+                    <b>Ratio</b> = Espectadores Twitch / Jugadores Steam &nbsp;·&nbsp; Cuanto mayor, más gente prefiere <em>ver</em> que jugar.<br>
+                    <b>Espectadores / Stream</b> = Espectadores totales / Streams activos &nbsp;·&nbsp; Audiencia media disponible por streamer.<br>
+                    <b>Puntuación</b> = (peso ratio × ratio) + (peso espectadores/stream × espectadores/stream ÷ 1000), ambos normalizados a 0-1.<br>
+                    <b>Color:</b>&nbsp;
+                    <span class="score-alta">Alta</span>&nbsp; puntuación &gt; 0.35 &nbsp;&nbsp;
+                    <span class="score-media">Media</span>&nbsp; puntuación &gt; 0.17 &nbsp;&nbsp;
+                    <span class="score-baja">Baja</span>&nbsp; resto.
                 </div>
 
-                <!-- Tabla -->
                 <div class="card mb-5">
                     <div class="card-body">
                         <div class="d-flex align-items-baseline gap-3 mb-3">
-                            <h2 class="mb-0">🏆 Recomendaciones para Streamers</h2>
+                            <h2 class="mb-0">📋 Tabla completa de recomendaciones</h2>
                             <span class="text-secondary fs-6" id="showingCount"></span>
                         </div>
                         <div class="table-responsive">
@@ -218,18 +196,15 @@ public class DashboardServer {
                                         <th>#</th>
                                         <th data-col="gameName" data-type="str">Juego</th>
                                         <th data-col="steamPlayers" data-type="num">Jugadores Steam</th>
-                                        <th data-col="twitchViewers" data-type="num">Viewers Twitch</th>
-                                        <th data-col="twitchStreams" data-type="num">Streams activos</th>
-                                        <th data-col="streamPotentialRatio" data-type="num">Stream Potential Ratio</th>
-                                        <th data-col="viewerPerStream" data-type="num">Viewers / Stream</th>
-                                        <th data-col="_score" data-type="num">Score</th>
-                                        <th data-col="_score" data-type="num">Oportunidad</th>
+                                        <th data-col="twitchViewers" data-type="num">Espectadores Twitch</th>
+                                        <th data-col="twitchStreams" data-type="num">Streams Activos</th>
+                                        <th data-col="streamPotentialRatio" data-type="num">Ratio</th>
+                                        <th data-col="viewerPerStream" data-type="num">Espectadores / Stream</th>
+                                        <th data-col="_score" data-type="num">Puntuación</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recoBody">
-                                    <tr>
-                                        <td colspan="9" class="text-center text-secondary">Cargando...</td>
-                                    </tr>
+                                    <tr><td colspan="8" class="text-center text-secondary">Cargando...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -238,15 +213,12 @@ public class DashboardServer {
             </div>
 
             <script>
-                let allData       = [];
-                let sortCol       = 'streamPotentialRatio';
-                let sortDir       = 'desc';
-                let wRatio        = 70;
-                let wViewers      = 30;
-                let scatterInst   = null;
-                let barInst       = null;
+                let allData  = [];
+                let sortCol  = 'streamPotentialRatio';
+                let sortDir  = 'desc';
+                let wRatio   = 70;
+                let wViewers = 30;
 
-                // ── Utilidades ──────────────────────────────────────────────
                 function fmt(n, dec = 0) {
                     if (n == null) return '–';
                     if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
@@ -260,10 +232,10 @@ public class DashboardServer {
                     return (wRatio / 100) * normRatio + (wViewers / 100) * normViewers;
                 }
 
-                function badge(s) {
-                    if (s > 0.35) return { label: 'Alta',  cls: 'badge-high', color: '#238636' };
-                    if (s > 0.17) return { label: 'Media', cls: 'badge-mid',  color: '#9a6700' };
-                    return              { label: 'Baja',  cls: 'badge-low',  color: '#b91c1c' };
+                function scoreClass(s) {
+                    if (s > 0.35) return 'score-alta';
+                    if (s > 0.17) return 'score-media';
+                    return 'score-baja';
                 }
 
                 function enriched() {
@@ -274,7 +246,44 @@ public class DashboardServer {
                     return parseInt(document.getElementById('limitSelect').value);
                 }
 
-                // ── Tabla ───────────────────────────────────────────────────
+                function renderPodium() {
+                    const top3 = enriched().sort((a, b) => b._score - a._score).slice(0, 3);
+                    if (!top3.length) return;
+
+                    const medals   = ['🥇', '🥈', '🥉'];
+                    const confetti = ['🎉', '✨', '⭐', '🎊', '💫', '🌟'];
+                    const positions = [
+                        {top:'-26px', left:'-26px'}, {top:'-26px', right:'-26px'},
+                        {bottom:'-26px', left:'-26px'}, {bottom:'-26px', right:'-26px'},
+                        {top:'-26px', left:'44%'}, {bottom:'-26px', left:'44%'}
+                    ];
+
+                    function card(g, rank) {
+                        const isFirst = rank === 0;
+                        const cls     = isFirst ? 'p1' : rank === 1 ? 'p2' : 'p3';
+                        let conf = '';
+                        if (isFirst) {
+                            confetti.forEach((em, i) => {
+                                const pos   = positions[i];
+                                const delay = (i * 0.45).toFixed(2);
+                                const sty   = Object.entries(pos).map(([k,v]) => k+':'+v).join(';');
+                                conf += `<span class="confetti-piece" style="${sty};animation-delay:${delay}s">${em}</span>`;
+                            });
+                        }
+                        return `<div class="podium-card ${cls}">
+                            ${conf}
+                            <div class="podium-medal">${medals[rank]}</div>
+                            <div class="podium-name">${g.gameName}</div>
+                            <div class="podium-score">Puntuación: <span>${g._score.toFixed(3)}</span></div>
+                            <div class="podium-extra">${fmt(g.steamPlayers)} jugadores &nbsp;·&nbsp; ${fmt(g.twitchViewers)} espectadores</div>
+                        </div>`;
+                    }
+
+                    const order = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3.length === 2 ? [top3[1], top3[0]] : [top3[0]];
+                    const ranks = top3.length >= 3 ? [1, 0, 2]                  : top3.length === 2 ? [1, 0]              : [0];
+                    document.getElementById('podiumWrapper').innerHTML = order.map((g, i) => card(g, ranks[i])).join('');
+                }
+
                 function renderTable() {
                     const lim  = getLimit();
                     const data = enriched()
@@ -286,29 +295,26 @@ public class DashboardServer {
                         })
                         .slice(0, lim);
 
-                    document.getElementById('showingCount').textContent =
-                        `— mostrando ${data.length} de ${allData.length}`;
+                    document.getElementById('showingCount').textContent = `— mostrando ${data.length} de ${allData.length}`;
 
                     document.querySelectorAll('thead th[data-col]').forEach(th => {
-                        const existing = th.querySelector('.sort-arrow');
-                        if (existing) existing.remove();
+                        const ex = th.querySelector('.sort-arrow');
+                        if (ex) ex.remove();
                         if (th.dataset.col === sortCol) {
-                            const arrow = document.createElement('span');
-                            arrow.className   = 'sort-arrow';
-                            arrow.textContent = sortDir === 'asc' ? '↑' : '↓';
-                            th.appendChild(arrow);
+                            const arr = document.createElement('span');
+                            arr.className   = 'sort-arrow';
+                            arr.textContent = sortDir === 'asc' ? '↑' : '↓';
+                            th.appendChild(arr);
                         }
                     });
 
                     const tbody = document.getElementById('recoBody');
                     if (!data.length) {
-                        tbody.innerHTML =
-                            '<tr><td colspan="9" class="text-center text-secondary">Sin datos. Inicia los feeders.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-secondary">Sin datos. Inicia los feeders.</td></tr>';
                         return;
                     }
                     tbody.innerHTML = data.map((g, i) => {
-                        const s  = g._score;
-                        const op = badge(s);
+                        const s = g._score;
                         return `<tr>
                             <td><strong>${i + 1}</strong></td>
                             <td><strong>${g.gameName}</strong></td>
@@ -317,131 +323,39 @@ public class DashboardServer {
                             <td>${fmt(g.twitchStreams)}</td>
                             <td><strong>${g.streamPotentialRatio.toFixed(4)}</strong></td>
                             <td>${Math.round(g.viewerPerStream)}</td>
-                            <td>${s.toFixed(3)}</td>
-                            <td><span class="badge ${op.cls}">${op.label}</span></td>
+                            <td><span class="${scoreClass(s)}">${s.toFixed(3)}</span></td>
                         </tr>`;
                     }).join('');
                 }
 
-                // ── Gráficos ────────────────────────────────────────────────
-                function renderCharts() {
-                    const data = enriched().sort((a, b) => b._score - a._score);
-
-                    const byOpportunity = { Alta: [], Media: [], Baja: [] };
-                    data.forEach(g => byOpportunity[badge(g._score).label].push(g));
-
-                    // Scatter: ratio vs viewers/stream
-                    const scatterDatasets = [
-                        { label: 'Alta',  color: '#238636' },
-                        { label: 'Media', color: '#9a6700' },
-                        { label: 'Baja',  color: '#b91c1c' },
-                    ].map(({ label, color }) => ({
-                        label,
-                        backgroundColor: color,
-                        pointRadius: 6,
-                        pointHoverRadius: 9,
-                        data: byOpportunity[label].map(g => ({
-                            x: g.streamPotentialRatio,
-                            y: Math.min(g.viewerPerStream, 2000),
-                            name: g.gameName
-                        }))
-                    }));
-
-                    if (scatterInst) scatterInst.destroy();
-                    scatterInst = new Chart(document.getElementById('scatterChart'), {
-                        type: 'scatter',
-                        data: { datasets: scatterDatasets },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: { labels: { color: '#c9d1d9' } },
-                                tooltip: {
-                                    callbacks: {
-                                        label: ctx =>
-                                            `${ctx.raw.name} (ratio: ${ctx.raw.x.toFixed(3)}, v/stream: ${ctx.raw.y})`
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    title: { display: true, text: 'Stream Potential Ratio', color: '#8b949e' },
-                                    ticks: { color: '#8b949e' }, grid: { color: '#30363d' }
-                                },
-                                y: {
-                                    title: { display: true, text: 'Viewers / Stream (cap 2000)', color: '#8b949e' },
-                                    ticks: { color: '#8b949e' }, grid: { color: '#30363d' }
-                                }
-                            }
-                        }
-                    });
-
-                    // Bar: top 10 por score
-                    const top10 = data.slice(0, 10);
-                    if (barInst) barInst.destroy();
-                    barInst = new Chart(document.getElementById('barChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: top10.map(g => g.gameName.length > 20 ? g.gameName.slice(0, 18) + '…' : g.gameName),
-                            datasets: [{
-                                label: 'Score',
-                                data: top10.map(g => parseFloat(g._score.toFixed(3))),
-                                backgroundColor: top10.map(g => badge(g._score).color),
-                                borderRadius: 4
-                            }]
-                        },
-                        options: {
-                            indexAxis: 'y',
-                            responsive: true,
-                            plugins: { legend: { display: false } },
-                            scales: {
-                                x: { max: 1, ticks: { color: '#8b949e' }, grid: { color: '#30363d' } },
-                                y: { ticks: { color: '#c9d1d9' }, grid: { color: '#30363d' } }
-                            }
-                        }
-                    });
-                }
-
-                // ── Resumen ─────────────────────────────────────────────────
-                function updateSummary() {
-                    const withTwitch = allData.filter(g => g.twitchStreams > 0).length;
-                    const topRatio   = allData.length
-                        ? allData.slice().sort((a, b) => b.streamPotentialRatio - a.streamPotentialRatio)[0]
-                              .streamPotentialRatio.toFixed(4)
-                        : '–';
-                    const totalViewers = allData.reduce((s, g) => s + g.twitchViewers, 0);
-
-                    document.getElementById('totalGames').textContent    = fmt(allData.length);
-                    document.getElementById('gamesWithTwitch').textContent = fmt(withTwitch);
-                    document.getElementById('topRatio').textContent      = topRatio;
-                    document.getElementById('totalViewers').textContent  = fmt(totalViewers);
-                    document.getElementById('lastUpdate').textContent    =
-                        'Actualizado: ' + new Date().toLocaleTimeString();
-                }
-
-                // ── Carga de datos ──────────────────────────────────────────
                 async function loadData() {
                     try {
                         allData = await fetch('/api/games').then(r => r.json());
-                        updateSummary();
+                        document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString();
+                        renderPodium();
                         renderTable();
-                        renderCharts();
                     } catch (err) {
                         document.getElementById('recoBody').innerHTML =
-                            `<tr><td colspan="9" class="text-center text-danger">Error: ${err.message}</td></tr>`;
+                            `<tr><td colspan="8" class="text-center text-danger">Error: ${err.message}</td></tr>`;
                     }
                 }
 
-                // ── Eventos de UI ───────────────────────────────────────────
+                function updateFormula() {
+                    document.getElementById('fW1').textContent = (wRatio   / 100).toFixed(2);
+                    document.getElementById('fW2').textContent = (wViewers / 100).toFixed(2);
+                }
+
                 function linkSliders(changedId, otherId, valId, otherValId) {
                     document.getElementById(changedId).addEventListener('input', function () {
                         const v = parseInt(this.value);
-                        document.getElementById(otherId).value    = 100 - v;
+                        document.getElementById(otherId).value          = 100 - v;
                         document.getElementById(valId).textContent      = v + '%';
                         document.getElementById(otherValId).textContent = (100 - v) + '%';
                         wRatio   = parseInt(document.getElementById('wRatio').value);
                         wViewers = parseInt(document.getElementById('wViewers').value);
+                        updateFormula();
+                        renderPodium();
                         renderTable();
-                        renderCharts();
                     });
                 }
                 linkSliders('wRatio',   'wViewers', 'wRatioVal',   'wViewersVal');

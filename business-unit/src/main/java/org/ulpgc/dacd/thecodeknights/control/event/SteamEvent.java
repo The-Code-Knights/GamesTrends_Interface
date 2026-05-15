@@ -1,4 +1,4 @@
-package org.ulpgc.dacd.thecodeknights.model;
+package org.ulpgc.dacd.thecodeknights.control.event;
 
 public class SteamEvent {
 
