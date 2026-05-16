@@ -1,5 +1,8 @@
 # GamesTrends
 
+<img width="3812" height="2160" alt="dashboard" src="https://github.com/user-attachments/assets/4c00b7bc-053e-4055-92ef-dfbe5b5d3253" />
+
+
 ## Descripción general
 
 **GamesTrends** es un sistema de análisis de tendencias del sector videojuegos que combina datos en tiempo real de **Steam** y **Twitch** para identificar qué juegos tienen mayor potencial de streaming.
